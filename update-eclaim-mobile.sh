@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #Internal parameters:
 TARGET=10.5.4.12
 USERNAME=steelburn
@@ -7,6 +6,22 @@ USERNAME=steelburn
 #Read parameter:
 PARAM=$1
 PARAM2=$2
+
+#Fancy thing:
+# Black        0;30     Dark Gray     1;30
+# Red          0;31     Light Red     1;31
+# Green        0;32     Light Green   1;32
+# Brown/Orange 0;33     Yellow        1;33
+# Blue         0;34     Light Blue    1;34
+# Purple       0;35     Light Purple  1;35
+# Cyan         0;36     Light Cyan    1;36
+# Light Gray   0;37     White         1;37
+# No colour    0;0
+
+RED='\033[0;31m'
+NC='\033[0m'
+HL='\033[1;33m'
+HL2='\033[0;36m'
 
 # Let's come out clean on the supported environment.
 # We'll just support MacOS, Debian & Alpine for the time being
@@ -20,11 +35,11 @@ function check_platform() {
         BREW=`which brew`
         if [ '$BREW' == '' ]
             then
-            echo "'brew' package manager is not installed. I need brew to function properly."
+            echo -e "${HL}brew${NC} package manager is not installed. I need brew to function properly."
             #Get brew
             /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
             else
-            echo "We have 'brew'. That's good."
+            echo -e "We have ${HL}brew${NC}. That's good."
             fi
         update_pkg='brew update'
         add_pkg='brew install'
@@ -55,19 +70,19 @@ function check_platform() {
         fi
     else
         PLATFORM_SUPPORT=n
-        echo "Sorry. We don't support this platform yet."
+        echo -e "${RED}Sorry.${NC} We don't support this platform yet."
         exit -1
     fi
 }
 
 function menu () {
     echo "No action parameter was set. What do you want to do?"
-    echo "         0. Cancel"
-    echo "         1. Initialize build environment ( $0 init )"
-    echo "         2. Build & update 'eclaim-apk' in development ( $0 apk )"
+    echo -e "         0. Cancel"
+    echo -e "         1. Initialize build environment ${HL2}( $0 init )${NC}"
+    echo -e "         2. Build & update 'eclaim-apk' in development ${HL2}( $0 apk )${NC}"
     if [ `uname -s` == Darwin ] 
         then 
-        echo "         3. Build & update 'eclaim-ios' ( $0 ios )" 
+        echo -e "         3. Build & update 'eclaim-ios' ${HL2}( $0 ios )${NC}" 
         fi
     if [ `uname -s` == Darwin ] 
         then 
@@ -113,7 +128,7 @@ function setup_eclaim() {
         cordova-plugin-app-version \
         cordova-plugin-market \
         --save
-    npm rebuild node-sass --force
+    npm rebuild node-sass
 }
 
 # WIP, mostly done but needs to evaluate with full run.
@@ -154,8 +169,28 @@ function install_android_sdk_linux() {
 
 #WIP:
 function install_android_sdk_darwin() {
-    #We do nothing now. We'll have the SDK installation steps ready soon.
-    echo "We are doing nothing now."
+    brew cask install java
+    brew install ant
+    brew install maven
+    brew install gradle
+    brew cask install android-sdk
+    brew cask install android-ndk
+    sdkmanager --update --no-ui
+    brew cask install intel-haxm
+   
+    export ANT_HOME=/usr/local/opt/ant
+    export ANT_HOME=/usr/local/opt/ant/libexec
+    export MAVEN_HOME=/usr/local/opt/maven
+    export GRADLE_HOME=/usr/local/opt/gradle
+    export ANDROID_HOME=/usr/local/opt/android-sdk
+    export ANDROID_NDK_HOME=/usr/local/opt/android-ndk
+
+    export PATH=$ANT_HOME/bin:$PATH
+    export PATH=$MAVEN_HOME/bin:$PATH
+    export PATH=$GRADLE_HOME/bin:$PATH
+    export PATH=$ANDROID_HOME/tools:$PATH
+    export PATH=$ANDROID_HOME/platform-tools:$PATH
+    export PATH=$ANDROID_HOME/build-tools/export PATH=$ANDROID_HOME/build-tools/$(ls $ANDROID_HOME/build-tools | sort | tail -1):$PATH
 }
 
 #WIP:
