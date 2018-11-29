@@ -234,7 +234,7 @@ function init() {
             NPMACCEPTED=n
             fi
         fi
-    if [ "NODEACCEPTED" == "n" ] && [ "NPMACCEPTED" == "n" ]
+    if [ "$NODEACCEPTED" == "n" ] && [ "$NPMACCEPTED" == "n" ]
         then
             touch ~/.bash_profile
             touch ~/.bashrc
