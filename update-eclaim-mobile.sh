@@ -191,6 +191,7 @@ function install_android_sdk_darwin() {
     yes | sdkmanager --licenses
     brew cask install intel-haxm
    
+   echo "
     export ANT_HOME=/usr/local/opt/ant
     export ANT_HOME=/usr/local/opt/ant/libexec
     export MAVEN_HOME=/usr/local/opt/maven
@@ -205,6 +206,9 @@ function install_android_sdk_darwin() {
     export PATH=$ANDROID_HOME/tools:$PATH
     export PATH=$ANDROID_HOME/platform-tools:$PATH
     export PATH=$ANDROID_HOME/build-tools/export PATH=$ANDROID_HOME/build-tools/$(ls $ANDROID_HOME/build-tools | sort | tail -1):$PATH
+    " > ~/.androidrc
+    echo source ~/.androidrc >> ~./.bashrc
+    echo source .bashrc >> ~/.bash_profile
 }
 
 #WIP:
