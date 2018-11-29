@@ -159,7 +159,7 @@ function install_brew() {
         then
         BREW=`which brew`
         echo "BREW is in $BREW"
-        if [ '$BREW' == '' ]
+        if [ "$BREW" == "" ]
             then
             echo -e "${HL}brew${NC} package manager is not installed. I need brew to function properly."
             #Get brew
