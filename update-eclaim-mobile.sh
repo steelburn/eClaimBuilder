@@ -213,10 +213,10 @@ function init() {
     NODEACCEPTED=n
     NPMACCEPTED=n
     NODE_INSTALLED=`command -v node`
-    if [ -x $NODE_INSTALLED ]
+    if [ ! -z $NODE_INSTALLED ]
         then
         NODEVER=`node -v`
-        if [ `echo $NODEVER | cut -d'.' -f1` == v8 ] 
+        if [ "`echo $NODEVER | cut -d'.' -f1`" == "v8" ] 
             then
             NODEACCEPTED=y
             else
@@ -224,10 +224,10 @@ function init() {
             fi
         fi
     NPM_INSTALLED=`command -v npm`
-    if [ -x $NPM_INSTALLED ]
+    if [ ! -z $NPM_INSTALLED ]
         then        
         NPMVER=`npm -v`
-        if [ `echo $NPMVER | cut -d'.' -f1` == v4 ]
+        if [ "`echo $NPMVER | cut -d'.' -f1`" == "v4" ]
             then
             NPMACCEPTED=y
             else
