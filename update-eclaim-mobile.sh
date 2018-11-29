@@ -178,7 +178,9 @@ function install_android_sdk_darwin() {
     brew cask uninstall java
     brew tap caskroom/versions
     brew cask install java8
+    mkdir -p ~/.android
     touch ~/.android/repositories.cfg
+
     brew install ant
     brew install maven
     brew install gradle
@@ -186,7 +188,7 @@ function install_android_sdk_darwin() {
     brew cask install android-ndk
     sdkmanager --update
     sdkmanager "platforms;android-25" "build-tools;25.0.2" "extras;google;m2repository" "extras;android;m2repository"
-    sdkmanager --licenses
+    yes | sdkmanager --licenses
     brew cask install intel-haxm
    
     export ANT_HOME=/usr/local/opt/ant
