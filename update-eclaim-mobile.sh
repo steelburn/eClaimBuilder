@@ -195,8 +195,9 @@ function install_android_sdk_darwin() {
     export ANT_HOME=/usr/local/opt/ant/libexec
     export MAVEN_HOME=/usr/local/opt/maven
     export GRADLE_HOME=/usr/local/opt/gradle
-    export ANDROID_HOME=/usr/local/opt/android-sdk
-    export ANDROID_NDK_HOME=/usr/local/opt/android-ndk
+    export ANDROID_HOME=/usr/local/share/android-sdk
+    export ANDROID_SDK_ROOT=/usr/local/share/android-sdk
+    export ANDROID_NDK_HOME=/usr/local/share/android-ndk
 
     export PATH=$ANT_HOME/bin:$PATH
     export PATH=$MAVEN_HOME/bin:$PATH
@@ -284,6 +285,7 @@ function main() {
             read -p " Do you want me to fetch and configure eClaimMobile for you? (y for yes; any other key to exit: " yesplease
             if [ "$yesplease" == "y" ] || [ "$yesplease" == "Y" ]
                 then
+                init
                 setup_eclaim
                 exit 0
             else
