@@ -311,7 +311,7 @@ function main() {
         build_eclaim
         update_stable
     else
-        echo "You have entered '$1' as parameter. I don't understand that."
+        echo "You have entered '$PARAM' as parameter. I don't understand that."
     fi
     cd $WD
 }
