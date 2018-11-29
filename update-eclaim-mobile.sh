@@ -157,7 +157,7 @@ function install_android_sdk_linux() {
 function install_brew() {
     if [ `uname -s` == Darwin ] 
         then
-        BREW=`which brew`
+        BREW=`command -v brew`
         echo "BREW is in $BREW"
         if [ ! -f "/usr/local/bin/brew" ]
             then
@@ -210,21 +210,31 @@ function init() {
     $add_pkg $PYTHON27PKG
     # Install NodeJS
     # Don't install NodeJS if we already have the right version
-    NODEVER=`node -v`
-    if [ `echo $NODEVER | cut -d'.' -f1` == v8 ] 
+    NODEACCEPTED=n
+    NPMACCEPTED=n
+    NODE_INSTALLED=`command -v node`
+    if [ -x $NODE_INSTALLED ]
         then
-        NODEACCEPTED=y
-        else
-        NODEACCEPTED=n
+        NODEVER=`node -v`
+        if [ `echo $NODEVER | cut -d'.' -f1` == v8 ] 
+            then
+            NODEACCEPTED=y
+            else
+            NODEACCEPTED=n
+            fi
         fi
-    NPMVER=`npm -v`
-    if [ `echo $NPMVER | cut -d'.' -f1` == v4 ]
-        then
-        NPMACCEPTED=y
-        else
-        NPMACCEPTED=n
+    NPM_INSTALLED=`command -v npm`
+    if [ -x $NPM_INSTALLED ]
+        then        
+        NPMVER=`npm -v`
+        if [ `echo $NPMVER | cut -d'.' -f1` == v4 ]
+            then
+            NPMACCEPTED=y
+            else
+            NPMACCEPTED=n
+            fi
         fi
-    if [ NODEACCEPTED == n ] && [ NPMACCEPTED == n ]
+    if [ "NODEACCEPTED" == "n" ] && [ "NPMACCEPTED" == "n" ]
         then
             touch ~/.bash_profile
             touch ~/.bashrc
@@ -239,10 +249,10 @@ function init() {
         fi
     # Install Cordova & Ionic
     npm i -g ionic cordova
-    if [ $PLATFORM == Linux ]
+    if [ "$PLATFORM" == "Linux" ]
         then
         install_android_sdk_linux
-    elif [ $PLATFORM == Darwin ]
+    elif [ "$PLATFORM" == "Darwin" ]
         then
         install_android_sdk_darwin
         fi
@@ -276,7 +286,7 @@ function main() {
     else
         cd $ECLAIMDIR
     fi
-    if [[ $PARAM == '' ]]
+    if [[ "$PARAM" == "" ]]
         then
         menu
         menuoption=$?
