@@ -265,7 +265,7 @@ function main() {
             echo "eClaimMobile directory not found. We can fetch and configure eClaimMobile for you."
             echo "Otherwise, please run the script in parent directory of eClaimMobile."
             read -" Do you want me to fetch and configure eClaimMobile for you? (y for yes; any other key to exit: " yesplease
-            if [ $yesplease == 'y' ] || [ $yesplease == 'Y' ]
+            if [ "$yesplease" == "y" ] || [ "$yesplease" == "Y" ]
                 then
                 setup_eclaim
                 exit 0
