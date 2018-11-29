@@ -32,20 +32,7 @@ function check_platform() {
         PLATFORM=Darwin
         PLATFORM_SUPPORT=y
         echo "Hello Darwin."
-        BREW=`which brew`
-        if [ '$BREW' == '' ]
-            then
-            echo -e "${HL}brew${NC} package manager is not installed. I need brew to function properly."
-            #Get brew
-            /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-            else
-            echo -e "We have ${HL}brew${NC}. That's good."
-            fi
-        update_pkg='brew update'
-        add_pkg='brew install'
-        del_pkg='brew uninstall'
         PYTHON27PKG=python@2
-
     elif [ `uname -s` == Linux ] 
         then
         PLATFORM=Linux
@@ -167,6 +154,25 @@ function install_android_sdk_linux() {
         fi
 }
 
+function install_brew() {
+    if [ `uname -s` == Darwin ] 
+        then
+        BREW=`which brew`
+        echo "BREW is in $BREW"
+        if [ '$BREW' == '' ]
+            then
+            echo -e "${HL}brew${NC} package manager is not installed. I need brew to function properly."
+            #Get brew
+            /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+            else
+            echo -e "We have ${HL}brew${NC}. That's good."
+            fi
+        update_pkg='brew update'
+        add_pkg='brew install'
+        del_pkg='brew uninstall'
+    fi
+}
+
 #WIP:
 function install_android_sdk_darwin() {
     brew cask install java
@@ -197,6 +203,7 @@ function install_android_sdk_darwin() {
 function init() {
     check_platform
     echo "Updating package manager"
+    install_brew
     $update_pkg
     echo "Initializing build environment"
     # Install Python
