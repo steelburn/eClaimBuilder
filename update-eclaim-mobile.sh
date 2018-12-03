@@ -333,6 +333,9 @@ function main() {
         echo "Okay. We'll build stable."
         build_eclaim
         update_stable
+    elif [ "$PARAM" == "init" ]
+        then
+        init
     else
         echo "You have entered '$PARAM' as parameter. I don't understand that."
     fi
