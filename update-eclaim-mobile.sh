@@ -54,11 +54,15 @@ function check_platform() {
             del_pkg='apt-get autoremove -y'
             clean_pkg='rm '
             PYTHON27PKG=python2.7
+        else 
+        PLATFORM_SUPPORT=n
+        echo -e "${RED}Sorry.${NC} We don't support this platform yet."
+        exit 1        
         fi
     else
         PLATFORM_SUPPORT=n
         echo -e "${RED}Sorry.${NC} We don't support this platform yet."
-        exit -1
+        exit 1
     fi
 }
 
@@ -276,8 +280,7 @@ function init() {
 function main() {
     WD=`pwd`
     ECLAIMDIR=$WD/eClaimMobile
-    check_platform
-    if [ $? == 0 ]
+    if [ check_platform ]
         then
         if [ ! -d "$ECLAIMDIR" ]
         then
