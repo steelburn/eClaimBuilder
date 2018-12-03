@@ -46,7 +46,7 @@ function check_platform() {
             # Python 2.7 package:
             PYTHON27PKG=python2
 
-        elif [ DISTRO == debian ] 
+        elif [ DISTRO == debian ] || [ DISTRO == ubuntu ]
             then
             PLATFORM_SUPPORT=y
             update_pkg='apt-get update'
