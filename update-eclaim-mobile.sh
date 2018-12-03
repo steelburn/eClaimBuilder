@@ -348,8 +348,11 @@ function main() {
         else
             echo "You have entered '$PARAM' as parameter. I don't understand that."
         fi
+        cd $HOME
+        source .bashrc
         cd $WD
     fi
+
 }
 
 # Run main function
