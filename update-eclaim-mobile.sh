@@ -220,11 +220,11 @@ function install_android_sdk_darwin() {
 function init() {
     echo "Updating package manager"
     install_brew
-    $update_pkg
-    $add_pkg curl
+    sudo $update_pkg
+    sudo $add_pkg curl
     echo "Initializing build environment"
     # Install Python
-    $add_pkg $PYTHON27PKG
+    sudo $add_pkg $PYTHON27PKG
     # Install NodeJS
     # Don't install NodeJS if we already have the right version
     NODEACCEPTED=n
