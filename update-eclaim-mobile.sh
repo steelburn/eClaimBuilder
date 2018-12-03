@@ -276,73 +276,75 @@ function init() {
 function main() {
     WD=`pwd`
     ECLAIMDIR=$WD/eClaimMobile
-    check_platform
-    if [ ! -d "$ECLAIMDIR" ]
-    then
-        if [ "$PARAM" == "init" ]
+    if [ check_platform ]
         then
-            echo "eClaimMobile directory not found. So we will include preparing eCaimMobile as part of"
-            echo "initialization process."
-            init
-            setup_eclaim
-            exit 0
-        else
-            echo "eClaimMobile directory not found. We can fetch and configure eClaimMobile for you."
-            echo "Otherwise, please run the script in parent directory of eClaimMobile."
-            read -p " Do you want me to fetch and configure eClaimMobile for you? (y for yes; any other key to exit: " yesplease
-            if [ "$yesplease" == "y" ] || [ "$yesplease" == "Y" ]
-                then
+        if [ ! -d "$ECLAIMDIR" ]
+        then
+            if [ "$PARAM" == "init" ]
+            then
+                echo "eClaimMobile directory not found. So we will include preparing eCaimMobile as part of"
+                echo "initialization process."
                 init
                 setup_eclaim
                 exit 0
             else
-                exit -1
+                echo "eClaimMobile directory not found. We can fetch and configure eClaimMobile for you."
+                echo "Otherwise, please run the script in parent directory of eClaimMobile."
+                read -p " Do you want me to fetch and configure eClaimMobile for you? (y for yes; any other key to exit: " yesplease
+                if [ "$yesplease" == "y" ] || [ "$yesplease" == "Y" ]
+                    then
+                    init
+                    setup_eclaim
+                    exit 0
+                else
+                    exit -1
+                fi
             fi
-        fi
-    else
-        cd $ECLAIMDIR
-    fi
-    if [[ "$PARAM" == "" ]]
-        then
-        menu
-        menuoption=$?
-        if [[ $menuoption == '1' ]]
-            then
-            echo "Initialize build environment ( $0 init )"
-            init
-        elif [[ $menuoption == '2' ]]
-            then
-            echo "Build & update 'eclaim-apk' in development ( $0 apk )"
-            build_eclaim
-            if [[ "$?" == "0" ]]
-                then
-                update_stable
-            else
-                echo "Not updating softlink."
-            fi
-        elif [[ $menuoption == '3' ]]
-            then
-            echo "Build & update 'eclaim-ios' ( $0 ios )"
         else
-            exit 0
+            cd $ECLAIMDIR
         fi
-    elif [[ $PARAM == 'current' ]]
-        then
-        echo "Okay. We'll build current."
-        build_eclaim
-        update_current
-    elif [[ $PARAM == 'stable' ]]
-        then 
-        echo "Okay. We'll build stable."
-        build_eclaim
-        update_stable
-    elif [ "$PARAM" == "init" ]
-        then
-        init
-    else
-        echo "You have entered '$PARAM' as parameter. I don't understand that."
+        if [[ "$PARAM" == "" ]]
+            then
+            menu
+            menuoption=$?
+            if [[ $menuoption == '1' ]]
+                then
+                echo "Initialize build environment ( $0 init )"
+                init
+            elif [[ $menuoption == '2' ]]
+                then
+                echo "Build & update 'eclaim-apk' in development ( $0 apk )"
+                build_eclaim
+                if [[ "$?" == "0" ]]
+                    then
+                    update_stable
+                else
+                    echo "Not updating softlink."
+                fi
+            elif [[ $menuoption == '3' ]]
+                then
+                echo "Build & update 'eclaim-ios' ( $0 ios )"
+            else
+                exit 0
+            fi
+        elif [[ $PARAM == 'current' ]]
+            then
+            echo "Okay. We'll build current."
+            build_eclaim
+            update_current
+        elif [[ $PARAM == 'stable' ]]
+            then 
+            echo "Okay. We'll build stable."
+            build_eclaim
+            update_stable
+        elif [ "$PARAM" == "init" ]
+            then
+            init
+        else
+            echo "You have entered '$PARAM' as parameter. I don't understand that."
+        fi
+        cd $WD
     fi
-    cd $WD
 }
 
 # Run main function
