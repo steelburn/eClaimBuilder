@@ -136,7 +136,7 @@ function install_android_sdk_linux() {
     mkdir -p $HOME/lib
     cd $HOME/lib
     wget http://dl.google.com/android/android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz
-    tar -zxf android-sdk_r${ANDROID_SDK_VERSION}.tgz
+    tar -zxf android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz
     echo yes | ${ANDROID_HOME}/tools/android update sdk --filter tools,platform-tools,build-tools-${ANDROID_BUILD_TOOLS_VERSION},android-${ANDROID_API_LEVEL},extra-android-support,extra-android-m2repository,extra-google-m2repository --no-ui --force --no-https --all > /dev/null
     rm $HOME/lib/android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz
 
