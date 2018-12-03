@@ -280,7 +280,7 @@ function init() {
 function main() {
     WD=`pwd`
     ECLAIMDIR=$WD/eClaimMobile
-    CANPROCEED=check_platform
+    CANPROCEED=$(check_platform)
     echo "Can Proceed $CANPROCEED"
     if [[ $CANPROCEED == 0 ]]
         then
