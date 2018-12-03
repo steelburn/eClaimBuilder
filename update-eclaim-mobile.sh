@@ -221,6 +221,7 @@ function init() {
     echo "Updating package manager"
     install_brew
     $update_pkg
+    $add_pkg curl
     echo "Initializing build environment"
     # Install Python
     $add_pkg $PYTHON27PKG
