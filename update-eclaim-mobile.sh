@@ -280,7 +280,7 @@ function init() {
 function main() {
     WD=`pwd`
     ECLAIMDIR=$WD/eClaimMobile
-    if [[ "check_platform" == "0" ]]
+    if [[ "check_platform" != "0" ]]
         then
         if [ ! -d "$ECLAIMDIR" ]
         then
