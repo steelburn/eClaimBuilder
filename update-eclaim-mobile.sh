@@ -127,7 +127,7 @@ function install_android_sdk_linux() {
     # installation script for Android SDK and JDK 8 on Ubuntu 
     # for Android development with gradlew-based projects
     # tested on Cloud9
-
+    CURRENTDIR=`pwd`
     ANDROID_HOME=$HOME/lib/android-sdk-linux
     ANDROID_SDK_VERSION=24.4.1
     ANDROID_BUILD_TOOLS_VERSION=23.0.2
@@ -157,6 +157,7 @@ function install_android_sdk_linux() {
             echo y | android update sdk --no-ui -a --filter tools,platform-tools,${ANDROID_API_LEVELS},build-tools-${ANDROID_BUILD_TOOLS_VERSION} --no-https && \
             rm /var/cache/apk/*
         fi
+    cd $CURRENTDIR
 }
 
 function install_brew() {
