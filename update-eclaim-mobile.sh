@@ -218,71 +218,68 @@ function install_android_sdk_darwin() {
 
 #WIP:
 function init() {
-    if [ check_platform ]
+    echo "Updating package manager"
+    install_brew
+    $update_pkg
+    echo "Initializing build environment"
+    # Install Python
+    $add_pkg $PYTHON27PKG
+    # Install NodeJS
+    # Don't install NodeJS if we already have the right version
+    NODEACCEPTED=n
+    NPMACCEPTED=n
+    NODE_INSTALLED=`command -v node`
+    if [ ! -z $NODE_INSTALLED ]
         then
-        echo "Updating package manager"
-        install_brew
-        $update_pkg
-        echo "Initializing build environment"
-        # Install Python
-        $add_pkg $PYTHON27PKG
-        # Install NodeJS
-        # Don't install NodeJS if we already have the right version
-        NODEACCEPTED=n
-        NPMACCEPTED=n
-        NODE_INSTALLED=`command -v node`
-        if [ ! -z $NODE_INSTALLED ]
+        NODEVER=`node -v`
+        if [ "`echo $NODEVER | cut -d'.' -f1`" == "v8" ] 
             then
-            NODEVER=`node -v`
-            if [ "`echo $NODEVER | cut -d'.' -f1`" == "v8" ] 
-                then
-                NODEACCEPTED=y
-                else
-                NODEACCEPTED=n
-                fi
-            fi
-        NPM_INSTALLED=`command -v npm`
-        if [ ! -z $NPM_INSTALLED ]
-            then        
-            NPMVER=`npm -v`
-            if [ "`echo $NPMVER | cut -d'.' -f1`" == "v4" ]
-                then
-                NPMACCEPTED=y
-                else
-                NPMACCEPTED=n
-                fi
-            fi
-        if [ "$NODEACCEPTED" == "n" ] && [ "$NPMACCEPTED" == "n" ]
-            then
-                touch ~/.bash_profile
-                touch ~/.bashrc
-                curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
-                export NVM_DIR="$HOME/.nvm"
-                [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-                [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-                nvm install lts/carbon
-                nvm use lts/carbon
+            NODEACCEPTED=y
             else
-                echo "You already have NodeJS $NODEVER and NPM $NPMVER. We'll skip NodeJS installation."
+            NODEACCEPTED=n
             fi
-        # Install Cordova & Ionic
-        npm i -g ionic cordova
-        if [ "$PLATFORM" == "Linux" ]
+        fi
+    NPM_INSTALLED=`command -v npm`
+    if [ ! -z $NPM_INSTALLED ]
+        then        
+        NPMVER=`npm -v`
+        if [ "`echo $NPMVER | cut -d'.' -f1`" == "v4" ]
             then
-            install_android_sdk_linux
-        elif [ "$PLATFORM" == "Darwin" ]
-            then
-            install_android_sdk_darwin
+            NPMACCEPTED=y
+            else
+            NPMACCEPTED=n
             fi
-    fi
+        fi
+    if [ "$NODEACCEPTED" == "n" ] && [ "$NPMACCEPTED" == "n" ]
+        then
+            touch ~/.bash_profile
+            touch ~/.bashrc
+            curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+            nvm install lts/carbon
+            nvm use lts/carbon
+        else
+            echo "You already have NodeJS $NODEVER and NPM $NPMVER. We'll skip NodeJS installation."
+        fi
+    # Install Cordova & Ionic
+    npm i -g ionic cordova
+    if [ "$PLATFORM" == "Linux" ]
+        then
+        install_android_sdk_linux
+    elif [ "$PLATFORM" == "Darwin" ]
+        then
+        install_android_sdk_darwin
+        fi
+
 }
 
 function main() {
     WD=`pwd`
     ECLAIMDIR=$WD/eClaimMobile
-    CANPROCEED=$(check_platform)
-    echo "Can Proceed $CANPROCEED"
-    if [[ $CANPROCEED == 0 ]]
+    check_platform
+    if [[ $PLATFORM_SUPPORT == y ]]
         then
         if [ ! -d "$ECLAIMDIR" ]
         then
