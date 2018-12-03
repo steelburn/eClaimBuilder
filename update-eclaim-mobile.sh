@@ -142,7 +142,7 @@ function install_android_sdk_linux() {
 
     if [ $DISTRO == debian ] || [ $DISTRO == ubuntu ]
         then
-            sudo $add_pkg ppa:webupd8team/java
+            sudo add-apt-repository ppa:webupd8team/java
             sudo $update_pkg
             sudo $add_pkg -qq lib32stdc++6 lib32z1 # Android SDK dependencies
             sudo $add_pkg oracle-java8-installer
