@@ -129,6 +129,7 @@ function install_android_sdk_linux() {
     ANDROID_BUILD_TOOLS_VERSION=23.0.2
     ANDROID_API_LEVEL=22
 
+    mkdir -p $HOME/lib
     cd $HOME/lib
     wget http://dl.google.com/android/android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz
     tar -zxf android-sdk_r${ANDROID_SDK_VERSION}.tgz
@@ -213,61 +214,63 @@ function install_android_sdk_darwin() {
 
 #WIP:
 function init() {
-    check_platform
-    echo "Updating package manager"
-    install_brew
-    $update_pkg
-    echo "Initializing build environment"
-    # Install Python
-    $add_pkg $PYTHON27PKG
-    # Install NodeJS
-    # Don't install NodeJS if we already have the right version
-    NODEACCEPTED=n
-    NPMACCEPTED=n
-    NODE_INSTALLED=`command -v node`
-    if [ ! -z $NODE_INSTALLED ]
+    if [ check_platform ]
         then
-        NODEVER=`node -v`
-        if [ "`echo $NODEVER | cut -d'.' -f1`" == "v8" ] 
+        echo "Updating package manager"
+        install_brew
+        $update_pkg
+        echo "Initializing build environment"
+        # Install Python
+        $add_pkg $PYTHON27PKG
+        # Install NodeJS
+        # Don't install NodeJS if we already have the right version
+        NODEACCEPTED=n
+        NPMACCEPTED=n
+        NODE_INSTALLED=`command -v node`
+        if [ ! -z $NODE_INSTALLED ]
             then
-            NODEACCEPTED=y
-            else
-            NODEACCEPTED=n
+            NODEVER=`node -v`
+            if [ "`echo $NODEVER | cut -d'.' -f1`" == "v8" ] 
+                then
+                NODEACCEPTED=y
+                else
+                NODEACCEPTED=n
+                fi
             fi
-        fi
-    NPM_INSTALLED=`command -v npm`
-    if [ ! -z $NPM_INSTALLED ]
-        then        
-        NPMVER=`npm -v`
-        if [ "`echo $NPMVER | cut -d'.' -f1`" == "v4" ]
+        NPM_INSTALLED=`command -v npm`
+        if [ ! -z $NPM_INSTALLED ]
+            then        
+            NPMVER=`npm -v`
+            if [ "`echo $NPMVER | cut -d'.' -f1`" == "v4" ]
+                then
+                NPMACCEPTED=y
+                else
+                NPMACCEPTED=n
+                fi
+            fi
+        if [ "$NODEACCEPTED" == "n" ] && [ "$NPMACCEPTED" == "n" ]
             then
-            NPMACCEPTED=y
+                touch ~/.bash_profile
+                touch ~/.bashrc
+                curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+                [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+                nvm install lts/carbon
+                nvm use lts/carbon
             else
-            NPMACCEPTED=n
+                echo "You already have NodeJS $NODEVER and NPM $NPMVER. We'll skip NodeJS installation."
             fi
-        fi
-    if [ "$NODEACCEPTED" == "n" ] && [ "$NPMACCEPTED" == "n" ]
-        then
-            touch ~/.bash_profile
-            touch ~/.bashrc
-            curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-            nvm install lts/carbon
-            nvm use lts/carbon
-        else
-            echo "You already have NodeJS $NODEVER and NPM $NPMVER. We'll skip NodeJS installation."
-        fi
-    # Install Cordova & Ionic
-    npm i -g ionic cordova
-    if [ "$PLATFORM" == "Linux" ]
-        then
-        install_android_sdk_linux
-    elif [ "$PLATFORM" == "Darwin" ]
-        then
-        install_android_sdk_darwin
-        fi
+        # Install Cordova & Ionic
+        npm i -g ionic cordova
+        if [ "$PLATFORM" == "Linux" ]
+            then
+            install_android_sdk_linux
+        elif [ "$PLATFORM" == "Darwin" ]
+            then
+            install_android_sdk_darwin
+            fi
+    fi
 }
 
 function main() {
