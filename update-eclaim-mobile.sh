@@ -291,6 +291,7 @@ function main() {
                 echo "initialization process."
                 init
                 setup_eclaim
+                echo "Initialization & setup completed. Please restart your terminal session."
                 exit 0
             else
                 echo "eClaimMobile directory not found. We can fetch and configure eClaimMobile for you."
@@ -300,6 +301,7 @@ function main() {
                     then
                     init
                     setup_eclaim
+                echo "Initialization & setup completed. Please restart your terminal session."
                     exit 0
                 else
                     exit -1
@@ -316,6 +318,7 @@ function main() {
                 then
                 echo "Initialize build environment ( $0 init )"
                 init
+                echo "Initialization & setup completed. Please restart your terminal session."
             elif [[ $menuoption == '2' ]]
                 then
                 echo "Build & update 'eclaim-apk' in development ( $0 apk )"
@@ -345,6 +348,7 @@ function main() {
         elif [ "$PARAM" == "init" ]
             then
             init
+                echo "Initialization & setup completed. Please restart your terminal session."
         else
             echo "You have entered '$PARAM' as parameter. I don't understand that."
         fi
