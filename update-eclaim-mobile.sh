@@ -140,13 +140,13 @@ function install_android_sdk_linux() {
     echo yes | ${ANDROID_HOME}/tools/android update sdk --filter tools,platform-tools,build-tools-${ANDROID_BUILD_TOOLS_VERSION},android-${ANDROID_API_LEVEL},extra-android-support,extra-android-m2repository,extra-google-m2repository --no-ui --force --no-https --all > /dev/null
     rm $HOME/lib/android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz
 
-    if [ DISTRO == debian ]
+    if [ $DISTRO == debian ] || [ $DISTRO == ubuntu ]
         then
             sudo $add_pkg ppa:webupd8team/java
             sudo $update_pkg
             sudo $add_pkg -qq lib32stdc++6 lib32z1 # Android SDK dependencies
             sudo $add_pkg oracle-java8-installer
-    elif [ DISTRO == alpine ]
+    elif [ $DISTRO == alpine ]
         then
             $update_pkg
             $add_pkg openjdk7 
