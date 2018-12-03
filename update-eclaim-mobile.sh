@@ -37,7 +37,7 @@ function check_platform() {
         then
         PLATFORM=Linux
         DISTRO=`cat /etc/*release | grep ^ID= | cut -d'=' -f2`
-        if [ DISTRO == alpine ] 
+        if [ $DISTRO == alpine ] 
             then
             PLATFORM_SUPPORT=y
             update_pkg='apk update'
@@ -46,7 +46,7 @@ function check_platform() {
             # Python 2.7 package:
             PYTHON27PKG=python2
 
-        elif [ DISTRO == debian ] || [ DISTRO == ubuntu ]
+        elif [ $DISTRO == debian ] || [ $DISTRO == ubuntu ]
             then
             PLATFORM_SUPPORT=y
             update_pkg='apt-get update'
