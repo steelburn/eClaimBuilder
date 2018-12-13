@@ -3,6 +3,8 @@
 # Internal parameters:
 TARGET=10.5.4.12
 USERNAME=steelburn
+SOURCEREPO=https://github.com/zencomputersystems/eClaim.git
+
 
 # Read parameter:
 PARAM=$1
@@ -22,7 +24,7 @@ function build_eclaim () {
     if [[ "$?" == "0" ]]
     then
      ssh $USERNAME@$TARGET rm -rf eclaim-`date +%d` 
-     ssh $TARGET$USERNAME@$TARGET mkdir eclaim-`date +%d`
+     ssh $USERNAME@$TARGET mkdir eclaim-`date +%d`
      scp -r www/* $USERNAME@$TARGET:eclaim-`date +%d`
      return 0
     else
@@ -47,6 +49,18 @@ function main() {
     if [ ! -d "$ECLAIMDIR" ]
     then
         echo "eClaim directory not found. Please place the script in parent directory of eClaim."
+        echo "Otherwise we can fetch from Github an initial copy of eClaim."
+        read -p "Do you want to initialize eClaim from Github repository? Enter y/n:" initrepo
+        if [ "$initrepo" == "y" ] || [ "$initrepo" == "Y" ]
+        then
+            git clone $SOURCEREPO
+            cd $ECLAIMDIR
+            npm i
+            cd $WD
+            echo "Please re-run the script."
+        else
+            echo "Okay."
+        fi
         exit -1
     else
     cd $ECLAIMDIR
