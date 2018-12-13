@@ -2,6 +2,7 @@
 #Internal parameters:
 TARGET=10.5.4.12
 USERNAME=steelburn
+APKDEVDIR=~/eclaim-apk
 
 #Read parameter:
 PARAM=$1
@@ -277,6 +278,14 @@ function init() {
 
 }
 
+function build_eclaim_apk() {
+    ionic cordova build android --release && $WD/build-signed.sh && scp *.apk $USERNAME@$TARGET:$APKDEVDIR
+}
+
+function build_eclaim_ios() {
+    ionic cordova build ios --release
+}
+
 function main() {
     WD=`pwd`
     ECLAIMDIR=$WD/eClaimMobile
@@ -322,7 +331,7 @@ function main() {
             elif [[ $menuoption == '2' ]]
                 then
                 echo "Build & update 'eclaim-apk' in development ( $0 apk )"
-                build_eclaim
+                build_eclaim_apk
                 if [[ "$?" == "0" ]]
                     then
                     update_stable
@@ -332,19 +341,18 @@ function main() {
             elif [[ $menuoption == '3' ]]
                 then
                 echo "Build & update 'eclaim-ios' ( $0 ios )"
+                build_eclaim_ios
             else
                 exit 0
             fi
-        elif [[ $PARAM == 'current' ]]
+        elif [[ $PARAM == 'apk' ]]
             then
-            echo "Okay. We'll build current."
-            build_eclaim
-            update_current
-        elif [[ $PARAM == 'stable' ]]
+            echo "Okay. We'll build APK, signed it, and update a copy in the development server."
+            build_eclaim_apk
+        elif [[ $PARAM == 'ios' ]]
             then 
-            echo "Okay. We'll build stable."
-            build_eclaim
-            update_stable
+            echo "Okay. We'll build iOS."
+            build_eclaim_ios
         elif [ "$PARAM" == "init" ]
             then
             init
