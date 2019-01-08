@@ -55,7 +55,23 @@ function main() {
         then
             git clone $SOURCEREPO
             cd $ECLAIMDIR
-            npm i
+            npm install && \
+            npm install --save \
+            #    ionic-angular@latest \ 
+                @ngx-translate/http-loader@latest \
+                crypto-js \
+                @types/crypto-js \
+                chart.js \
+                chart.piecelabel.js \
+                xlsx \
+                file-saver \
+                ngx-pagination \
+                file-saver \
+                @types/file-saver \
+                && \
+            npm install  --save-dev \
+                @angular/tsc-wrapped @ionic/app-scripts@latest && \
+            npm install @types/chart.js ng2-charts
             cd $WD
             echo "Please re-run the script."
         else
