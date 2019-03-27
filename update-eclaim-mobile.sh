@@ -279,7 +279,7 @@ function init() {
 }
 
 function build_eclaim_apk() {
-    ionic cordova build android --release && $ECLAIMDIR/build-signed.sh && scp *.apk $USERNAME@$TARGET:$APKDEVDIR
+    ionic cordova build android --release && $WD/build-signed.sh && scp *.apk $USERNAME@$TARGET:$APKDEVDIR
 }
 
 function build_eclaim_ios() {
