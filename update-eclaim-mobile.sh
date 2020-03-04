@@ -2,7 +2,7 @@
 #Internal parameters:
 TARGET=10.5.4.12
 USERNAME=steelburn
-APKDEVDIR=~/eclaim-apk
+APKDEVDIR="~/eclaim-apk"
 
 #Read parameter:
 PARAM=$1
@@ -279,7 +279,11 @@ function init() {
 }
 
 function build_eclaim_apk() {
-    ionic cordova build android --release && $WD/build-signed.sh && scp *.apk $USERNAME@$TARGET:$APKDEVDIR
+    ionic cordova build android --release && \
+    echo "Running signing script: $WD/build-signed.sh" && \
+    cd $WD && \
+    $WD/build-signed.sh && \
+    scp *.apk $USERNAME@$TARGET:$APKDEVDIR
 }
 
 function build_eclaim_ios() {
@@ -347,7 +351,7 @@ function main() {
             fi
         elif [[ $PARAM == 'apk' ]]
             then
-            echo "Okay. We'll build APK, signed it, and update a copy in the development server."
+            echo "Okay. We'll build APK, sign it, and update a copy in the development server."
             build_eclaim_apk
         elif [[ $PARAM == 'ios' ]]
             then 

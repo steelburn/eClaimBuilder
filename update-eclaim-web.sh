@@ -4,7 +4,7 @@
 TARGET=10.5.4.12
 USERNAME=steelburn
 SOURCEREPO=https://github.com/zencomputersystems/eClaim.git
-
+BUILDCMD="ionic build --minifycss"
 
 # Read parameter:
 PARAM=$1
@@ -20,7 +20,7 @@ function menu () {
 function build_eclaim () {
     echo "Building eClaim"
     git stash && git pull
-    npm run-script build
+    ${BUILDCMD}
     if [[ "$?" == "0" ]]
     then
      ssh $USERNAME@$TARGET rm -rf eclaim-`date +%d` 

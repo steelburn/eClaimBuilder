@@ -1,13 +1,23 @@
 #!/bin/bash
-L1TARGETFILE=android-release-unsigned.apk
-L1SOURCE1=platforms/android/build/outputs/apk/release/android-release-unsigned.apk
-L1SOURCE2=platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk
+WD=`pwd`
+L1TARGETFILE=$WD/android-release-unsigned.apk
+L1SOURCE1=$WD/eClaimMobile/platforms/android/build/outputs/apk/release/android-release-unsigned.apk
+L1SOURCE2=$WD/eClaimMobile/platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk
+L1SOURCE3=$WD/eClaimMobile/platforms/android/build/outputs/apk/android-release-unsigned.apk
 
-if [ $ANDROID_HOME == '' ] 
+ANDROID_HOME=$HOME/lib/android-sdk-linux
+echo yes | ${ANDROID_HOME}/tools/android update sdk --filter tools,platform-tools,build-tools-${ANDROID_BUILD_TOOLS_VERSION},android-${ANDROID_API_LEVEL},extra-android-support,extra-android-m2repository,extra-google-m2repository --no-ui --force --no-https --all > /dev/null
+export ANDROID_HOME=/usr/local/share/android-sdk
+export PATH=$ANDROID_HOME/tools:$PATH
+export PATH=$ANDROID_HOME/platform-tools:$PATH
+export PATH=$ANDROID_HOME/build-tools/export PATH=$ANDROID_HOME/build-tools/$(ls $ANDROID_HOME/build-tools | sort | tail -1):$PATH
+
+
+if [[ "$ANDROID_HOME" == "" ]] 
 then
     echo "ANDROID_HOME not set. We can't continue."
     exit 1;
-elif [ `which zipalign` == '' ] 
+elif [[ `which zipalign` == '' ]] 
 then
 ZIPALIGN=`find $ANDROID_HOME -name "zipalign" | tail -1`
 else
@@ -28,18 +38,24 @@ echo This script will build and sign APK for release in Google Play Store.
 #read
 
 # copy unsigned APK to current directory
-if [ -f $L1SOURCE1 ]
+if [[ -f $L1SOURCE1 ]]
     then
     # Remove any existing APK in current directory.
     rm *.apk
     cp $L1SOURCE1 $L1TARGETFILE
     echo "$L1TARGETFILE has been copied from $L1SOURCE1"
-elif [ -f $L1SOURCE2 ]
+elif [[ -f $L1SOURCE2 ]]
     then
     # Remove any existing APK in current directory.
     rm *.apk
     cp $L1SOURCE2 $L1TARGETFILE
-    echo "$L1TARGETFILE has been copied from $L1SOURCE1"
+    echo "$L1TARGETFILE has been copied from $L1SOURCE2"
+elif [[ -f $L1SOURCE3 ]]
+    then
+    # Remove any existing APK in current directory.
+    rm *.apk
+    cp $L1SOURCE3 $L1TARGETFILE
+    echo "$L1TARGETFILE has been copied from $L1SOURCE3"
 else
     echo "Unsigned APK file does not exist. Exiting."
     exit -1
@@ -53,6 +69,7 @@ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.
 # ZIPalign the signed APK and save as eClaimMobile.apk
 # echo If zipalign command is not detected. Try giving full path from sdk tool. 
 # echo C:\Users\shabbeer\AppData\Local\Android\Sdk\build-tools\27.0.3\zipalign -v 4 android-release-unsigned.apk eClaimMobile.apk
+echo ZIP-aligning using $ZIPALIGN
 $ZIPALIGN -v 4 android-release-unsigned.apk eClaimMobile.apk
 
 # Remove old unaligned APK
