@@ -1,0 +1,6 @@
+[submodule "eClaim"]
+	path = eClaim 
+	url = https://github.com/zencomputersystems/eClaim.git
+[submodule "eClaimMobile"]
+	path = eClaimMobile
+	url = https://github.com/zencomputersystems/eClaimMobile.git
