@@ -1,8 +1,8 @@
 #!/bin/bash
 #Internal parameters:
-TARGET=10.5.4.12
-USERNAME=steelburn
-APKDEVDIR="~/eclaim-apk"
+export ORG_GRADLE_PROJECT_cdvMinSdkVersion=20
+export ORG_GRADLE_PROJECT_cdvtargetSdkVersion=28
+NODETARGETVER=lts/dubnium
 
 #Read parameter:
 PARAM=$1
@@ -76,17 +76,18 @@ function menu () {
         then 
         echo -e "         3. Build & update 'eclaim-ios' ${HL2}( $0 ios )${NC}" 
         fi
+    echo -e "         5. Update build environment"
     if [ `uname -s` == Darwin ] 
         then 
-        read -p "Enter [0]/1/2/3:" option
+        read -p "Enter [0]/1/2/3/5:" option
         else
-        read -p "Enter [0]/1/2:" option
+        read -p "Enter [0]/1/2/5:" option
         fi
     return $option
 }
 
 function setup_eclaim() {
-    git clone https://github.com/zencomputersystems/eClaimMobile.git
+    git clone git@github.com:zencomputersystems/eClaimMobile
     cd $ECLAIMDIR
     npm install
     npm install --save \
@@ -130,23 +131,32 @@ function install_android_sdk_linux() {
     # tested on Cloud9
     CURRENTDIR=`pwd`
     ANDROID_HOME=$HOME/lib/android-sdk-linux
-    ANDROID_SDK_VERSION=24.4.1
-    ANDROID_BUILD_TOOLS_VERSION=23.0.2
-    ANDROID_API_LEVEL=22
+    ANDROID_SDK_VERSION=28.0.3
+    ANDROID_BUILD_TOOLS_VERSION=28.0.3
+    ANDROID_API_LEVEL=31
 
-    mkdir -p $HOME/lib
-    cd $HOME/lib
-    wget http://dl.google.com/android/android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz
-    tar -zxf android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz
-    echo yes | ${ANDROID_HOME}/tools/android update sdk --filter tools,platform-tools,build-tools-${ANDROID_BUILD_TOOLS_VERSION},android-${ANDROID_API_LEVEL},extra-android-support,extra-android-m2repository,extra-google-m2repository --no-ui --force --no-https --all > /dev/null
-    rm $HOME/lib/android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz
+    # Deprecated:
+#    mkdir -p $HOME/lib
+#    cd $HOME/lib
+#    wget http://dl.google.com/android/android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz
+#    tar -zxf android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz
+#    echo yes | ${ANDROID_HOME}/tools/android update sdk --filter tools,platform-tools,build-tools-${ANDROID_BUILD_TOOLS_VERSION},android-${ANDROID_API_LEVEL},extra-android-support,extra-android-m2repository,extra-google-m2repository --no-ui --force --no-https --all > /dev/null
+#    rm $HOME/lib/android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz
 
     if [ $DISTRO == debian ] || [ $DISTRO == ubuntu ]
         then
-            sudo add-apt-repository ppa:webupd8team/java
+            sudo apt-add-repository 'deb http://security.debian.org/debian-security stretch/updates main'
             sudo $update_pkg
-            sudo $add_pkg -qq lib32stdc++6 lib32z1 # Android SDK dependencies
-            sudo $add_pkg oracle-java8-installer
+            sudo $add_pkg openjdk-8-jdk
+            sudo $add_pkg -y android-sdk
+            yes | sdkmanager --licenses
+            echo "export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))" >> ~/.androidrc
+
+
+#            sudo add-apt-repository ppa:webupd8team/java
+#            sudo $update_pkg
+#            sudo $add_pkg -qq lib32stdc++6 lib32z1 # Android SDK dependencies
+#            sudo $add_pkg oracle-java8-installer
     elif [ $DISTRO == alpine ]
         then
             $update_pkg
@@ -180,25 +190,11 @@ function install_brew() {
     fi
 }
 
-#WIP:
-function install_android_sdk_darwin() {
-    brew cask uninstall java
-    brew tap caskroom/versions
-    brew cask install java8
-    mkdir -p ~/.android
-    touch ~/.android/repositories.cfg
-
-    brew install ant
-    brew install maven
-    brew install gradle
-    brew cask install android-sdk
-    brew cask install android-ndk
-    sdkmanager --update
-    sdkmanager "platforms;android-25" "build-tools;25.0.2" "extras;google;m2repository" "extras;android;m2repository"
-    yes | sdkmanager --licenses
-    brew cask install intel-haxm
-   
-   echo "
+function update_rc_darwin() {
+    ANDROID_HOME=/usr/local/share/android-sdk
+    CURRENTDIR=`pwd`
+    cd $HOME
+    echo "
     export ANT_HOME=/usr/local/opt/ant
     export ANT_HOME=/usr/local/opt/ant/libexec
     export MAVEN_HOME=/usr/local/opt/maven
@@ -207,15 +203,55 @@ function install_android_sdk_darwin() {
     export ANDROID_SDK_ROOT=/usr/local/share/android-sdk
     export ANDROID_NDK_HOME=/usr/local/share/android-ndk
 
-    export PATH=$ANT_HOME/bin:$PATH
-    export PATH=$MAVEN_HOME/bin:$PATH
-    export PATH=$GRADLE_HOME/bin:$PATH
-    export PATH=$ANDROID_HOME/tools:$PATH
-    export PATH=$ANDROID_HOME/platform-tools:$PATH
-    export PATH=$ANDROID_HOME/build-tools/export PATH=$ANDROID_HOME/build-tools/$(ls $ANDROID_HOME/build-tools | sort | tail -1):$PATH
+    export PATH=\$ANT_HOME/bin:\$PATH
+    export PATH=\$MAVEN_HOME/bin:\$PATH
+    export PATH=\$GRADLE_HOME/bin:\$PATH
+    export PATH=\$ANDROID_HOME/tools:\$PATH
+    export PATH=\$ANDROID_HOME/platform-tools:\$PATH
+    export PATH=\$ANDROID_HOME/build-tools:\$PATH
+    export PATH=\$ANDROID_HOME/build-tools/$(ls $ANDROID_HOME/build-tools | sort | tail -1):\$PATH
     " > ~/.androidrc
-    echo source ~/.androidrc >> ~./.bashrc
-    echo source .bashrc >> ~/.bash_profile
+    if [ $(cat .bashrc | grep 'source ~/.androidrc' | wc -l) == 0 ] ; then 
+        echo source ~/.androidrc >> ~/.bashrc
+        fi 
+    if [ $(cat .zshrc | grep 'source ~/.androidrc' | wc -l) == 0 ] ; then 
+        echo source ~/.androidrc >> ~/.zshrc
+        fi 
+    if [ $(cat .bashrc | grep 'source .bashrc' | wc -l) == 0 ] ; then 
+        echo source .bashrc >> ~/.bash_profile
+        fi 
+    cd $CURRENTDIR
+}
+
+function update_android_sdk_darwin() {
+    sdkmanager --update
+    LATEST_BUILDTOOLS="build-tools;$(sdkmanager --list | grep -v '\-rc' | awk '{ print $1 }' | grep -e 'build-tools;' | awk 'BEGIN { FS = ";" } ; { print $2 }' | sort -nr | head -1)"
+    LATEST_PLATFORMS="platforms;android-$(sdkmanager --list | awk '{ print $1 }' | grep -e 'platforms;' | awk 'BEGIN { FS = "-" } ; { print $2 }' | sort -nr | head -1)"
+    sdkmanager "$LATEST_PLATFORMS" "$LATEST_BUILDTOOLS" "extras;google;m2repository" "extras;android;m2repository"
+    yes | sdkmanager --licenses
+    update_rc_darwin
+}
+
+#WIP:
+function install_android_sdk_darwin() {
+    brew uninstall java
+    brew tap caskroom/versions
+    brew install java8
+    brew install --cask homebrew/cask-versions/adoptopenjdk8
+    mkdir -p ~/.android
+    touch ~/.android/repositories.cfg
+
+    brew install ant
+    brew install maven
+    brew install gradle
+    brew install android-sdk
+    brew install android-ndk
+    sdkmanager --update
+    sdkmanager "platforms;android-28" "build-tools;28.0.3" "extras;google;m2repository" "extras;android;m2repository"
+    yes | sdkmanager --licenses
+    brew install intel-haxm
+   
+   update_rc_darwin
 }
 
 #WIP:
@@ -223,7 +259,7 @@ function init() {
     echo "Updating package manager"
     install_brew
     sudo $update_pkg
-    sudo $add_pkg curl
+    sudo $add_pkg curl git build-essential
     echo "Initializing build environment"
     # Install Python
     sudo $add_pkg $PYTHON27PKG
@@ -257,12 +293,12 @@ function init() {
         then
             touch ~/.bash_profile
             touch ~/.bashrc
-            curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
             [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-            nvm install lts/carbon
-            nvm use lts/carbon
+            nvm install $NODETARGETVER
+            nvm use $NODETARGETVER
         else
             echo "You already have NodeJS $NODEVER and NPM $NPMVER. We'll skip NodeJS installation."
         fi
@@ -282,8 +318,7 @@ function build_eclaim_apk() {
     ionic cordova build android --release && \
     echo "Running signing script: $WD/build-signed.sh" && \
     cd $WD && \
-    $WD/build-signed.sh && \
-    scp *.apk $USERNAME@$TARGET:$APKDEVDIR
+    $WD/build-signed.sh
 }
 
 function build_eclaim_ios() {
@@ -346,6 +381,10 @@ function main() {
                 then
                 echo "Build & update 'eclaim-ios' ( $0 ios )"
                 build_eclaim_ios
+            elif [[ $menuoption == '5' ]]
+                then
+                echo "Updating build environment"
+                update_android_sdk_darwin
             else
                 exit 0
             fi
