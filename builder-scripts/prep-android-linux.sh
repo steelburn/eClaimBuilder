@@ -25,7 +25,7 @@ do
 done
 yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
 $ANDROID_CMDLINE/sdkmanager --install "build-tools;$ANDROID_BUILD_TOOLS_VERSION" "platforms;android-$ANDROID_PLATFORM_VERSION"
-
+sudo apt install -y gradle
 
 echo "export ANDROID_SDK_HOME=$ANDROID_SDK_HOME" >> ~/.androidrc
 echo "export ANDROID_SDK_ROOT=$ANDROID_SDK_HOME" >> ~/.androidrc

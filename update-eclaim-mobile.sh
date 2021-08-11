@@ -258,6 +258,8 @@ function init() {
             [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
             nvm install $NODETARGETVER
             nvm use $NODETARGETVER
+            echo "source .bashrc" >> .bash_profile
+            echo "source .androidrc" >> .bash_profile
         else
             echo "You already have NodeJS $NODEVER and NPM $NPMVER. We'll skip NodeJS installation."
         fi
