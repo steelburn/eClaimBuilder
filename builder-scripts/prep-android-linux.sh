@@ -9,6 +9,8 @@ ANDROID_SDK_ROOT=~/Android/sdk
 ANDROID_CMDLINE=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
 ANDROID_PLATFORM_VERSION=31
 ANDROID_BUILD_TOOLS_VERSION=28.0.3
+ANDROID_HOME=$ANDROID_SDK_HOME
+
 mkdir -p $ANDROID_SDK_HOME 
 mkdir -p $ANDROID_SDK_ROOT 
 
@@ -25,5 +27,9 @@ yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
 $ANDROID_CMDLINE/sdkmanager --install "build-tools;$ANDROID_BUILD_TOOLS_VERSION" "platforms;android-$ANDROID_PLATFORM_VERSION"
 
 
-echo "ANDROID_SDK_HOME=$ANDROID_SDK_HOME" >> ~/.androidrc
-echo "ANDROID_SDK_ROOT=$ANDROID_SDK_HOME" >> ~/.androidrc
+echo "export ANDROID_SDK_HOME=$ANDROID_SDK_HOME" >> ~/.androidrc
+echo "export ANDROID_SDK_ROOT=$ANDROID_SDK_HOME" >> ~/.androidrc
+echo "export ANDROID_HOME=$ANDROID_SDK_HOME" >> ~/.androidrc
+echo "export ANDROID_BUILD_TOOLS_VERSION=$ANDROID_BUILD_TOOLS_VERSION" >> ~/.androidrc
+echo "export ANDROID_PLATFORM_VERSION=$ANDROID_PLATFORM_VERSION" >> ~/.androidrc
+echo "export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform_tools:$ANDROID_HOME/build-tools:$ANDROID_HOME/build-tools/$(ls $ANDROID_HOME/build-tools | sort | tail -1)" >> ~/.androidrc

@@ -5,9 +5,9 @@ L1SOURCE1=$WD/eClaimMobile/platforms/android/build/outputs/apk/release/android-r
 L1SOURCE2=$WD/eClaimMobile/platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk
 L1SOURCE3=$WD/eClaimMobile/platforms/android/build/outputs/apk/android-release-unsigned.apk
 
-ANDROID_HOME=$HOME/lib/android-sdk-linux
+# ANDROID_HOME=$HOME/lib/android-sdk-linux
 echo yes | ${ANDROID_HOME}/tools/android update sdk --filter tools,platform-tools,build-tools-${ANDROID_BUILD_TOOLS_VERSION},android-${ANDROID_API_LEVEL},extra-android-support,extra-android-m2repository,extra-google-m2repository --no-ui --force --no-https --all > /dev/null
-export ANDROID_HOME=/usr/local/share/android-sdk
+# export ANDROID_HOME=/usr/local/share/android-sdk
 export PATH=$ANDROID_HOME/tools:$PATH
 export PATH=$ANDROID_HOME/platform-tools:$PATH
 export PATH=$ANDROID_HOME/build-tools/export PATH=$ANDROID_HOME/build-tools/$(ls $ANDROID_HOME/build-tools | sort | tail -1):$PATH

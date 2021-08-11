@@ -14,8 +14,34 @@ echo "Now we'll prepare some preliminary environment to download the rest of the
 sudo apt install -y git curl build-essential
 
 echo "Now downloading git repo..."
-git clone $REPO
+if [[ ! -d eClaimBuilder ]]; 
+then 
+ git clone $REPO
+else 
+ echo "Looks like eClaimBuilder repo folder already exist. We'll skip cloning the repo."
+fi
 
 echo "OK. We're done here. Next step: "
 echo "  cd eClaimBuilder "
 echo "  ./update-eclaim-mobile.sh init"
+
+if [[ ! -f ~/.ssh/id_rsa.pub ]]
+then
+ echo "Private/public key pair is not available yet. We'll generate one for you."
+ ssh-keygen -q
+ echo "Key generated. Please add the following ~/.ssh/id_rsa.pub content into your Github account:"
+ cat ~/.ssh/id_rsa.pub
+ read
+else
+ echo "Please add ~/.ssh/id_rsa.pub below into your Github SSH and GPG keys:"
+ cat ~/.ssh/id_rsa.pub
+fi
+
+echo "Installing JDK8."
+sudo apt update 
+sudo apt install -y software-properties-common
+sudo apt-add-repository 'deb http://security.debian.org/debian-security stretch/updates main' 
+sudo apt-get update
+sudo apt install -y  openjdk-8-jdk
+sudo update-alternatives --config java
+echo "export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))" > ~/.androidrc

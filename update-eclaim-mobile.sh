@@ -145,14 +145,14 @@ function install_android_sdk_linux() {
 
     if [ $DISTRO == debian ] || [ $DISTRO == ubuntu ]
         then
-            sudo apt-add-repository 'deb http://security.debian.org/debian-security stretch/updates main'
-            sudo $update_pkg
-            sudo $add_pkg openjdk-8-jdk
-            sudo $add_pkg -y android-sdk
-            yes | sdkmanager --licenses
-            echo "export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))" >> ~/.androidrc
+#            sudo apt-add-repository 'deb http://security.debian.org/debian-security stretch/updates main'
+#            sudo $update_pkg
+#            sudo $add_pkg openjdk-8-jdk
+#            sudo $add_pkg -y android-sdk
+#            yes | sdkmanager --licenses
+#            echo "export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))" >> ~/.androidrc
 
-
+	echo "nothing to do here. We've moved to different script."
 #            sudo add-apt-repository ppa:webupd8team/java
 #            sudo $update_pkg
 #            sudo $add_pkg -qq lib32stdc++6 lib32z1 # Android SDK dependencies
