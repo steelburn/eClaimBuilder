@@ -11,7 +11,7 @@ then
 fi
 
 echo "Now we'll prepare some preliminary environment to download the rest of the script."
-sudo apt install -y git curl build-essential
+sudo apt install -y git curl build-essential unzip
 
 echo "Now downloading git repo..."
 if [[ ! -d eClaimBuilder ]]; 
@@ -42,6 +42,6 @@ sudo apt update
 sudo apt install -y software-properties-common
 sudo apt-add-repository 'deb http://security.debian.org/debian-security stretch/updates main' 
 sudo apt-get update
-sudo apt install -y  openjdk-8-jdk
+sudo apt install -y  openjdk-8-jdk 
 sudo update-alternatives --config java
 echo "export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))" > ~/.androidrc

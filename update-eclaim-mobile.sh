@@ -126,49 +126,8 @@ function setup_eclaim() {
 
 # WIP, mostly done but needs to evaluate with full run.
 function install_android_sdk_linux() {
-    # installation script for Android SDK and JDK 8 on Ubuntu 
-    # for Android development with gradlew-based projects
-    # tested on Cloud9
-    CURRENTDIR=`pwd`
-    ANDROID_HOME=$HOME/lib/android-sdk-linux
-    ANDROID_SDK_VERSION=28.0.3
-    ANDROID_BUILD_TOOLS_VERSION=28.0.3
-    ANDROID_API_LEVEL=31
-
-    # Deprecated:
-#    mkdir -p $HOME/lib
-#    cd $HOME/lib
-#    wget http://dl.google.com/android/android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz
-#    tar -zxf android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz
-#    echo yes | ${ANDROID_HOME}/tools/android update sdk --filter tools,platform-tools,build-tools-${ANDROID_BUILD_TOOLS_VERSION},android-${ANDROID_API_LEVEL},extra-android-support,extra-android-m2repository,extra-google-m2repository --no-ui --force --no-https --all > /dev/null
-#    rm $HOME/lib/android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz
-
-    if [ $DISTRO == debian ] || [ $DISTRO == ubuntu ]
-        then
-#            sudo apt-add-repository 'deb http://security.debian.org/debian-security stretch/updates main'
-#            sudo $update_pkg
-#            sudo $add_pkg openjdk-8-jdk
-#            sudo $add_pkg -y android-sdk
-#            yes | sdkmanager --licenses
-#            echo "export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))" >> ~/.androidrc
-
-	echo "nothing to do here. We've moved to different script."
-#            sudo add-apt-repository ppa:webupd8team/java
-#            sudo $update_pkg
-#            sudo $add_pkg -qq lib32stdc++6 lib32z1 # Android SDK dependencies
-#            sudo $add_pkg oracle-java8-installer
-    elif [ $DISTRO == alpine ]
-        then
-            $update_pkg
-            $add_pkg openjdk7 
-            cd /opt
-            wget -q ${ANDROID_SDK_URL} && \
-            tar -xzf ${ANDROID_SDK_FILENAME} && \
-            rm ${ANDROID_SDK_FILENAME} && \
-            echo y | android update sdk --no-ui -a --filter tools,platform-tools,${ANDROID_API_LEVELS},build-tools-${ANDROID_BUILD_TOOLS_VERSION} --no-https && \
-            rm /var/cache/apk/*
-        fi
-    cd $CURRENTDIR
+# Debian only
+../builder-scripts/prep-android-linux.sh
 }
 
 function install_brew() {
@@ -218,7 +177,7 @@ function update_rc_darwin() {
         echo source ~/.androidrc >> ~/.zshrc
         fi 
     if [ $(cat .bashrc | grep 'source .bashrc' | wc -l) == 0 ] ; then 
-        echo source .bashrc >> ~/.bash_profile
+        echo "source .bashrc" >> ~/.bash_profile
         fi 
     cd $CURRENTDIR
 }

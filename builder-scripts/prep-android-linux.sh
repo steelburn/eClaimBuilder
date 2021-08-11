@@ -33,3 +33,5 @@ echo "export ANDROID_HOME=$ANDROID_SDK_HOME" >> ~/.androidrc
 echo "export ANDROID_BUILD_TOOLS_VERSION=$ANDROID_BUILD_TOOLS_VERSION" >> ~/.androidrc
 echo "export ANDROID_PLATFORM_VERSION=$ANDROID_PLATFORM_VERSION" >> ~/.androidrc
 echo "export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform_tools:$ANDROID_HOME/build-tools:$ANDROID_HOME/build-tools/$(ls $ANDROID_HOME/build-tools | sort | tail -1)" >> ~/.androidrc
+
+source ~/.androidrc
